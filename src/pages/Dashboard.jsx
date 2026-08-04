@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react';
 import API from '../api/axios';
 import { useNavigate } from 'react-router-dom';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 function Dashboard({ onLogout }) {
   const navigate = useNavigate();
@@ -12,6 +14,7 @@ function Dashboard({ onLogout }) {
   // Yeni Proje Formu İçin Stateler
   const [showModal, setShowModal] = useState(false);
   const [name, setName] = useState('');
+  const [inviteCode, setInviteCode] = useState('');
   const [description, setDescription] = useState('');
   const [createLoading, setCreateLoading] = useState(false);
 
@@ -30,6 +33,26 @@ function Dashboard({ onLogout }) {
       setLoading(false);
     }
   };
+
+const handleJoinProject = async (e) => {
+  e.preventDefault();
+  if (!inviteCode.trim()) return;
+
+  try {
+    const response = await API.post('/projects/join/', { invite_code: inviteCode.toUpperCase() });
+    toast.success(response.data.message);
+    setInviteCode(''); // Kutuyu temizle
+    fetchProjects(); // Listeyi güncelle
+  } catch (error) {
+    if (error.response && error.response.data && error.response.data.error) {
+      toast.error(error.response.data.error);
+    } else {
+      toast.error('Projeye katılma isteği gönderilemedi.');
+    }
+  }
+};
+
+
 
   // Sayfa ilk açıldığında projeleri çek
   useEffect(() => {
@@ -65,9 +88,11 @@ function Dashboard({ onLogout }) {
   return (
     <div className="min-h-screen bg-slate-900 text-white p-6 md:p-10">
       {/* Üst Header */}
+      <ToastContainer position="top-right" theme="dark" autoClose={3000} />
       <div className="max-w-6xl mx-auto flex justify-between items-center mb-8 border-b border-slate-800 pb-5">
         <div>
           <h1 className="text-3xl font-bold text-emerald-400">Görev Yöneticisi</h1>
+
           <p className="text-slate-400 text-sm mt-1">Proje ve Görev Yönetim Paneli</p>
         </div>
         <button
@@ -78,15 +103,43 @@ function Dashboard({ onLogout }) {
         </button>
       </div>
 
-      {/* Proje Ekleme Butonu ve Başlık */}
-      <div className="max-w-6xl mx-auto flex justify-between items-center mb-6">
-        <h2 className="text-xl font-semibold text-slate-200">Projelerim ({projects.length})</h2>
-        <button
-          onClick={() => setShowModal(true)}
-          className="bg-emerald-600 hover:bg-emerald-500 text-white font-medium px-4 py-2 rounded-xl transition-all shadow-lg shadow-emerald-900/20"
-        >
-          + Yeni Proje Ekle
-        </button>
+      {/* BAŞLIK VE AKSİYON BUTONLARI (Projeye Katıl & Yeni Proje Ekle) */}
+      <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center mb-6 gap-4">
+        
+        <h2 className="text-xl font-semibold text-slate-200 whitespace-nowrap">
+          Projelerim ({projects.length})
+        </h2>
+        
+        {/* Sağ Taraftaki Butonlar Grubu */}
+        <div className="flex flex-wrap items-center gap-3">
+          
+          {/* Kompakt Projeye Katıl Formu */}
+          <form onSubmit={handleJoinProject} className="flex gap-2">
+            <input
+              type="text"
+              placeholder="Davet Kodu"
+              value={inviteCode}
+              onChange={(e) => setInviteCode(e.target.value)}
+              maxLength={6}
+              className="w-32 sm:w-36 bg-slate-800 border border-slate-700 text-white rounded-xl px-3 py-2 text-sm focus:outline-none focus:border-blue-500 uppercase font-mono text-center tracking-wider placeholder:normal-case placeholder:font-sans placeholder:tracking-normal placeholder:text-slate-400"
+            />
+            <button
+              type="submit"
+              className="bg-blue-600 hover:bg-blue-500 text-white text-sm font-medium py-2 px-4 rounded-xl transition-colors whitespace-nowrap"
+            >
+              Katıl
+            </button>
+          </form>
+
+          {/* Yeni Proje Ekle Butonu */}
+          <button
+            onClick={() => setShowModal(true)}
+            className="bg-emerald-600 hover:bg-emerald-500 text-white text-sm font-medium px-4 py-2 rounded-xl transition-all shadow-lg shadow-emerald-900/20 whitespace-nowrap"
+          >
+            + Yeni Proje Ekle
+          </button>
+          
+        </div>
       </div>
       {/* ARAMA ÇUBUĞU BAŞLANGICI */}
       <div className="max-w-7xl mx-auto mb-6">
@@ -106,6 +159,7 @@ function Dashboard({ onLogout }) {
           />
         </div>
       </div>
+      
       {/* ARAMA ÇUBUĞU BİTİŞİ */}
 
       {/* Hata veya Yükleniyor Mesajı */}
@@ -113,38 +167,47 @@ function Dashboard({ onLogout }) {
       {error && <div className="text-center py-10 text-red-400">{error}</div>}
 
       {/* Projeler Kart Grid Yapısı */}
-      {!loading && !error && (
-        <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {projects.length === 0 ? (
-            <div className="col-span-full text-center py-12 bg-slate-800/50 rounded-2xl border border-slate-800">
-              <p className="text-slate-400">Henüz hiç proje oluşturulmamış.</p>
-            </div>
-          ) : (
-            filteredProjects.map((project) => (
-              <div
-                key={project.id}
-                className="bg-slate-800 border border-slate-700/60 p-6 rounded-2xl shadow-xl hover:border-emerald-500/50 transition-all flex flex-col justify-between"
-              >
-                <div>
-                  <h3 className="text-xl font-bold text-white mb-2">{project.name}</h3>
-                  <p className="text-slate-400 text-sm line-clamp-3 mb-4">
-                    {project.description || 'Açıklama belirtilmemiş.'}
-                  </p>
+          {!loading && !error && (
+            <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {projects.length === 0 ? (
+                <div className="col-span-full text-center py-12 bg-slate-800/50 rounded-2xl border border-slate-800">
+                  <p className="text-slate-400">Henüz hiç proje oluşturulmamış.</p>
                 </div>
-                <div className="pt-4 border-t border-slate-700/50 flex justify-between items-center text-xs text-slate-500">
-                  <span>{new Date(project.created_at).toLocaleDateString('tr-TR')}</span>
-                  <button 
-                    onClick={() => navigate(`/project/${project.id}`)}
-                    className="text-emerald-400 hover:text-emerald-300 font-medium text-sm"
+              ) : (
+                filteredProjects.map((project) => (
+                  <div
+                    key={project.id}
+                    className="bg-slate-800 border border-slate-700/60 p-6 rounded-2xl shadow-xl hover:border-emerald-500/50 transition-all flex flex-col justify-between"
                   >
-                    Görevleri Gör →
-                  </button>
-                </div>
-              </div>
-            ))
+                    <div>
+                      {/* BAŞLIK VE KOD ALANI (Yan Yana) */}
+                      <div className="flex justify-between items-start mb-2 gap-2">
+                        <h3 className="text-xl font-bold text-white line-clamp-1">{project.name}</h3>
+                        
+                        {/* DAVET KODU ETİKETİ (Sağ Üst) */}
+                        <span title="Projeye davet kodu" className="inline-block bg-slate-900 border border-slate-700 text-emerald-400 px-2.5 py-1 rounded-md text-xs font-mono tracking-widest font-semibold shadow-sm whitespace-nowrap">
+                          {project.invite_code}
+                        </span>
+                      </div>
+                      
+                      <p className="text-slate-400 text-sm line-clamp-3 mb-4 mt-2">
+                        {project.description || 'Açıklama belirtilmemiş.'}
+                      </p>
+                    </div>
+                    <div className="pt-4 border-t border-slate-700/50 flex justify-between items-center text-xs text-slate-500">
+                      <span>{new Date(project.created_at).toLocaleDateString('tr-TR')}</span>
+                      <button 
+                        onClick={() => navigate(`/project/${project.id}`)}
+                        className="text-emerald-400 hover:text-emerald-300 font-medium text-sm"
+                      >
+                        Görevleri Gör →
+                      </button>
+                    </div>
+                  </div>
+                ))
+              )}
+            </div>
           )}
-        </div>
-      )}
 
       {/* Yeni Proje Modal (Açılır Pencere) */}
       {showModal && (
