@@ -33,7 +33,7 @@ src/
 
 # 🚀 Öne Çıkan Özellikler
 
-* **Güvenli Oturum Yönetimi:** JWT (JSON Web Tokens) ile giriş/çıkış işlemleri ve korumalı (protected) rotalar.
+* **Güvenli Oturum Yönetimi:** JWT ile giriş/çıkış işlemleri ve korumalı rotalar.
 
 * **Ortak Proje Yönetimi:**
 
@@ -46,8 +46,6 @@ src/
 * **Gelişmiş Görev Panosu:** Görevler "Yapılacak", "Devam Eden" ve "Tamamlanan" olarak listelenir ve filtrelenebilir.
 
 * **Anlık İstatistikler:** Proje içindeki görev dağılımları dinamik Donut Grafik ile görselleştirilir.
-
-* **Sayfalama (Pagination):** Çok sayıda görevi olan projelerde sayfalama mantığı ile sistem yorulmadan hızlıca çalışır.
 
 ---
 
@@ -64,7 +62,7 @@ cd Mini_Gorev_Frontend
 
 ---
 
-**2. Gerekli Paketleri (Dependencies) Yükleyin:**
+**2. Gerekli Paketleri Yükleyin:**
 
 Sisteminizde Node.js yüklü olduğundan emin olun.
 
@@ -74,7 +72,7 @@ npm install
 
 ---
 
-**3. Çevre Değişkenlerini (Environment Variables) Ayarlayın:**
+**3. Çevre Değişkenlerini Ayarlayın:**
 
 Proje ana dizininde .env adında bir dosya oluşturun ve backend API adresinizi içine yapıştırın.
 
