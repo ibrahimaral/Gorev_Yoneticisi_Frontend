@@ -1,16 +1,98 @@
-# React + Vite
+# 🚀 Mini Görev Yöneticisi - Frontend (Web Arayüzü)
+Bu proje, Mini Task Manager API'sinin kullanıcıyla buluştuğu modern, hızlı ve duyarlı web arayüzüdür. Kullanıcıların kendi projelerini yönetebileceği, görevleri takip edebileceği ve davet kodları ile arkadaşlarıyla ortak çalışabileceği şık bir kontrol paneli sunar.
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+# 📁 Temel Klasör Yapısı
+```
+src/
+├── api/
+│   └── axios.js           # İsteklere JWT token'ı otomatik ekleyen yapılandırma
+├── pages/
+│   ├── Login.jsx          # Kayıt Ol ve Giriş Yap ekranları
+│   ├── Dashboard.jsx      # Projelerin listelendiği ve davet kodunun girildiği panel
+│   └── ProjectDetail.jsx  # Görevlerin, grafiklerin ve onay bekleyen isteklerin olduğu detay sayfası
+├── App.jsx                # Ana yönlendirmeler (Router) ve yetki kontrolleri
+└── main.jsx               # React uygulamasının kök (root) noktası
+```
 
-Currently, two official plugins are available:
+---
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+# 🛠️ Kullanılan Teknolojiler
+* Geliştirme Ortamı & Çerçeve: React.js & Vite
 
-## React Compiler
+* Tasarım & Şekillendirme: Tailwind CSS (Modern ve esnek UI)
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+* HTTP İstemcisi: Axios (Token bazlı güvenli API istekleri için yapılandırıldı)
 
-## Expanding the ESLint configuration
+* Sayfa Yönlendirmeleri: React Router DOM
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+* Veri Görselleştirme: Recharts (Kapsamlı Donut Grafikleri)
+
+* Kullanıcı Bildirimleri: React Toastify (Şık hata ve başarı mesajları)
+
+---
+
+# 🚀 Öne Çıkan Özellikler
+
+* **Güvenli Oturum Yönetimi:** JWT (JSON Web Tokens) ile giriş/çıkış işlemleri ve korumalı (protected) rotalar.
+
+* **Ortak Proje Yönetimi:**
+
+  * Her projenin benzersiz bir 6 haneli davet kodu bulunur.
+
+  * Kullanıcılar bu kodu kullanarak diğer projelere katılma isteği gönderebilir.
+
+  * Proje sahibi, gelen istekleri "Proje Detay" sayfasındaki özel panelden onaylayabilir veya reddedebilir.
+
+* **Gelişmiş Görev Panosu:** Görevler "Yapılacak", "Devam Eden" ve "Tamamlanan" olarak listelenir ve filtrelenebilir.
+
+* **Anlık İstatistikler:** Proje içindeki görev dağılımları dinamik Donut Grafik ile görselleştirilir.
+
+* **Sayfalama (Pagination):** Çok sayıda görevi olan projelerde sayfalama mantığı ile sistem yorulmadan hızlıca çalışır.
+
+---
+
+# 💻 Kurulum ve Çalıştırma
+Projeyi yerel makinenizde çalıştırmak için aşağıdaki adımları izleyin.
+
+* ⚠️ Önemli Not: Frontend projesinin çalışabilmesi için öncelikle [Mini Görev Yöneticisi API (Backend)] projesinin bilgisayarınızda çalışır durumda olması gerekmektedir (Varsayılan olarak [http://127.0.0.1:8000](http://127.0.0.1:8000)).
+
+**1. Repoyu Klonlayın:**
+```bash
+git clone https://github.com/ibrahimaral/Mini_Gorev_Frontend.git
+cd Mini_Gorev_Frontend
+```
+
+---
+
+**2. Gerekli Paketleri (Dependencies) Yükleyin:**
+
+Sisteminizde Node.js yüklü olduğundan emin olun.
+
+```bash
+npm install
+```
+
+---
+
+**3. Çevre Değişkenlerini (Environment Variables) Ayarlayın:**
+
+Proje ana dizininde .env adında bir dosya oluşturun ve backend API adresinizi içine yapıştırın.
+
+**Kod snippet:**
+```Kod snippet
+VITE_API_BASE_URL=http://127.0.0.1:8000/api
+```
+(Not: Eğer src/api/axios.js içinde URL'yi manuel tanımladıysanız bu adımı atlayabilirsiniz.)
+
+---
+
+**4. Geliştirme Sunucusunu Başlatın:**
+
+```bash
+npm run dev
+```
+
+---
+
+**5. Tarayıcıda Görüntüleyin:**
+Terminalde beliren adrese (genellikle http://localhost:5173) tıklayarak uygulamayı tarayıcınızda açın. Kayıt olup hemen yeni projeler oluşturmaya ve görevlerinizi yönetmeye başlayabilirsiniz!
